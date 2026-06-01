@@ -1,0 +1,34 @@
+
+name: Mantener app despierta
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0,5,10,15,20,25,30,35,40,45,50,55 * * * *"
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repo
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+
+      - name: Abrir app
+        env:
+          STREAMLIT_APP_URL: "https://mis-gasolineras.streamlit.app/"
+        run: python wake_app.py
+
